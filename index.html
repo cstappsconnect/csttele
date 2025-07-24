@@ -1,110 +1,58 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CryptoTrends - Telegram Mini App</title>
+  <title>CryptoTrends Telegram Mini App</title>
+
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Telegram SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
     body {
-      font-family: 'Orbitron', sans-serif;
-      background: #0f172a;
+      background-color: #0f172a;
       color: #e0e7ff;
-    }
-    .animate-marquee {
-      display: inline-block;
-      white-space: nowrap;
-      animation: marquee 20s linear infinite;
-    }
-    @keyframes marquee {
-      0%   { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-    .blurred {
-      filter: blur(5px);
-      pointer-events: none;
-      user-select: none;
+      font-family: 'Arial', sans-serif;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-4">
+<body class="flex flex-col items-center justify-center text-center p-4">
 
-  <!-- Hero Section -->
-  <section class="text-center mb-8 mt-4">
-    <h1 class="text-4xl font-bold text-blue-400 mb-2">📊 CryptoTrends</h1>
-    <p class="text-indigo-300 text-sm">Your real-time crypto trend & signal companion — optimized for Telegram</p>
-  </section>
+  <!-- App Container -->
+  <div class="w-full max-w-md bg-indigo-900 p-6 rounded-xl shadow-lg">
+    <h1 class="text-3xl font-bold text-blue-400 mb-4">🚀 CryptoTrends</h1>
+    <p class="text-indigo-200 mb-6">Get real-time crypto alerts, trends & portfolio insights directly in Telegram.</p>
 
-  <!-- Features Section -->
-  <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-    <div class="bg-indigo-800 p-4 rounded-lg shadow text-center">
-      <h2 class="text-lg font-semibold mb-2">🚀 Live Alerts</h2>
-      <p class="text-indigo-300 text-sm">Get notified instantly on major crypto movements.</p>
-    </div>
-    <div class="bg-indigo-800 p-4 rounded-lg shadow text-center">
-      <h2 class="text-lg font-semibold mb-2">📈 Trend Tracking</h2>
-      <p class="text-indigo-300 text-sm">Visualize market momentum with curated signals.</p>
-    </div>
-    <div class="bg-indigo-800 p-4 rounded-lg shadow text-center">
-      <h2 class="text-lg font-semibold mb-2">🔐 Portfolio Insights</h2>
-      <p class="text-indigo-300 text-sm">Track and manage your portfolio performance.</p>
-    </div>
-    <div class="bg-indigo-800 p-4 rounded-lg shadow text-center">
-      <h2 class="text-lg font-semibold mb-2">💡 AI-Driven Insights</h2>
-      <p class="text-indigo-300 text-sm">Stay ahead with machine learning powered alerts.</p>
-    </div>
-  </section>
-
-  <!-- Preview Section -->
-  <section class="mb-8">
-    <h3 class="text-lg font-bold mb-3">🔍 Preview</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div class="bg-indigo-700 p-4 rounded-lg blurred text-center">
-        <p class="text-indigo-100">BTC breaks resistance @ $XX,XXX</p>
-        <p class="text-green-400 text-sm">+4.3% • Now</p>
-      </div>
-      <div class="bg-indigo-700 p-4 rounded-lg blurred text-center">
-        <p class="text-indigo-100">DOGE spikes in whale activity</p>
-        <p class="text-yellow-400 text-sm">+12% • 10m ago</p>
-      </div>
-    </div>
-    <p class="text-center text-xs text-indigo-400 mt-2">Upgrade to unlock full access</p>
-  </section>
-
-  <!-- News Ticker -->
-  <section class="mb-8 bg-indigo-900 rounded p-3 overflow-hidden">
-    <div class="animate-marquee text-indigo-200 text-sm font-medium">
-      🚨 BTC hits $70k! &nbsp;&nbsp;&bull;&nbsp;&nbsp; ETH gas fees drop &nbsp;&nbsp;&bull;&nbsp;&nbsp; Solana integrates new L2 &nbsp;&nbsp;&bull;&nbsp;&nbsp; BlackRock ETF rumors confirmed
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="text-center mb-12">
-    <button id="openAppBtn"
-      class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-200 w-full">
-      🚀 Open in Telegram
+    <button id="subscribeBtn"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold text-lg transition">
+      Unlock Premium Access
     </button>
-    <p class="text-xs text-indigo-400 mt-2">100% free to try • Cancel anytime</p>
-  </section>
 
-  <!-- Footer -->
-  <footer class="text-center text-indigo-500 text-sm mt-auto pb-3">
-    Built for the Web3 era • Telegram Mini App
-  </footer>
+    <p class="text-xs text-indigo-400 mt-4">100% secure • Cancel anytime</p>
+  </div>
 
   <script>
-    // Telegram Mini App expand
-    if (window.Telegram && Telegram.WebApp) {
-      Telegram.WebApp.expand();
-    }
+    // Ensure Telegram Web App is ready
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
 
-    // Redirect to your actual mini app route or show modal (demo purpose)
-    document.getElementById("openAppBtn").addEventListener("click", () => {
-      // Example: navigate to your mini app entry point
-      // Telegram.WebApp.openLink("https://t.me/YourBot?start=app_entry");
-      alert("Launching Telegram Mini App (simulate navigation)");
+    // Example user info access
+    console.log("Telegram User:", tg.initDataUnsafe?.user);
+
+    document.getElementById('subscribeBtn').addEventListener('click', () => {
+      alert("Simulated unlock. Telegram user ID: " + tg.initDataUnsafe?.user?.id);
+      // You can send this to your backend or redirect here
+      // window.location.href = 'https://yourdomain.com/subscribe';
     });
   </script>
 </body>
