@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Telegram Mini App</title>
+  <title>Crypto Signals & Trends</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
@@ -12,149 +12,105 @@
 
     body {
       margin: 0;
-      padding: 16px;
       font-family: system-ui, sans-serif;
       font-size: 14px;
       background-color: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
     }
 
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: center;
+    .header {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      background-color: var(--tg-theme-secondary-bg-color);
+      padding: 8px;
+      border-bottom: 1px solid var(--tg-theme-hint-color);
     }
 
-    h1 {
-      font-size: 20px;
-      margin-bottom: 16px;
-    }
-
-    button {
-      display: block;
-      width: 100%;
-      margin: 8px 0;
-      padding: 12px;
-      background-color: var(--tg-theme-button-color, #0088cc);
-      color: var(--tg-theme-button-text-color, #fff);
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
+    .tab {
+      flex: 0 0 auto;
+      margin-right: 8px;
+      padding: 8px 16px;
+      background-color: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-text-color);
+      border-radius: 9999px;
       cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
     }
 
-    button:hover {
-      opacity: 0.9;
+    .tab.active {
+      background-color: var(--tg-theme-link-color);
     }
 
-    .info {
-      margin-top: 24px;
-      font-size: 12px;
-      color: var(--tg-theme-hint-color);
+    .container {
+      padding: 16px;
     }
 
-    .logo {
-      width: 48px;
-      margin-bottom: 16px;
+    .page {
+      display: none;
     }
 
-    a {
-      color: var(--tg-theme-link-color);
-      text-decoration: underline;
+    .page.active {
+      display: block;
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <div class="tab active" onclick="switchTab(1)">Signals</div>
+    <div class="tab" onclick="switchTab(2)">Trends</div>
+    <div class="tab" onclick="switchTab(3)">Insights</div>
+    <div class="tab" onclick="switchTab(4)">Portfolio</div>
+  </div>
+
   <div class="container">
-    <img src="https://telegram.org/img/twa-android.png" alt="TWA Logo" class="logo" />
-    <h1>Telegram Mini App Demo</h1>
+    <div id="Tab1Page" class="page active">
+      <h2>📈 Crypto Signals</h2>
+      <p>Latest buy/sell alerts, targets, stop-losses...</p>
+      <!-- More signal content -->
+    </div>
 
-    <button onclick="Telegram.WebApp.showAlert('Hello from Telegram Web App!')">
-      Show Alert
-    </button>
+    <div id="Tab2Page" class="page">
+      <h2>📊 Market Trends</h2>
+      <p>Trend analysis based on volume, volatility, and more...</p>
+      <!-- More trend data -->
+    </div>
 
-    <button onclick="showPopup()">
-      Show Popup
-    </button>
+    <div id="Tab3Page" class="page">
+      <h2>💡 Insights</h2>
+      <p>AI predictions, on-chain insights, social sentiment...</p>
+    </div>
 
-    <button onclick="Telegram.WebApp.expand()">
-      Expand Webview
-    </button>
-
-    <button onclick="toggleMainButton()">
-      Toggle Main Button
-    </button>
-
-    <button onclick="Telegram.WebApp.openTelegramLink('https://t.me/trendingapps')">
-      Open Telegram Link
-    </button>
-
-    <button onclick="Telegram.WebApp.openLink('https://ton.org/')">
-      Open External Link
-    </button>
-
-    <div class="info" id="viewport-info"></div>
+    <div id="Tab4Page" class="page">
+      <h2>💼 Portfolio</h2>
+      <p>Your watchlist, PnL, allocations, and more...</p>
+    </div>
   </div>
 
   <script>
-    // Ready
     Telegram.WebApp.ready();
-
-    // Set initial theme
-    document.documentElement.className = Telegram.WebApp.colorScheme;
-
-    // Set header color
     Telegram.WebApp.setHeaderColor('secondary_bg_color');
 
-    // Handle theme change
-    Telegram.WebApp.onEvent('themeChanged', () => {
-      document.documentElement.className = Telegram.WebApp.colorScheme;
-      document.body.style.backgroundColor = Telegram.WebApp.backgroundColor;
-    });
+    const tabs = document.querySelectorAll('.tab');
+    const pages = {
+      1: document.getElementById('Tab1Page'),
+      2: document.getElementById('Tab2Page'),
+      3: document.getElementById('Tab3Page'),
+      4: document.getElementById('Tab4Page')
+    };
 
-    // Main Button
-    Telegram.WebApp.MainButton.setParams({
-      text: 'Click Me',
-      is_visible: true,
-    });
-
-    Telegram.WebApp.MainButton.onClick(() => {
-      Telegram.WebApp.showAlert('Main Button Clicked!');
-    });
-
-    // Popup
-    function showPopup() {
-      Telegram.WebApp.showPopup({
-        title: 'Popup Title',
-        message: 'This is a popup message!',
-        buttons: [
-          { id: 'open', type: 'default', text: 'Open TON' },
-          { type: 'cancel' }
-        ]
-      }, (btn) => {
-        if (btn === 'open') {
-          Telegram.WebApp.openLink('https://ton.org/');
-        }
+    function switchTab(tabIndex) {
+      // Toggle tabs
+      tabs.forEach((tab, index) => {
+        tab.classList.toggle('active', index === tabIndex - 1);
       });
-    }
 
-    // Toggle button
-    function toggleMainButton() {
-      if (Telegram.WebApp.MainButton.isVisible) {
-        Telegram.WebApp.MainButton.hide();
-      } else {
-        Telegram.WebApp.MainButton.show();
+      // Toggle pages
+      for (const key in pages) {
+        pages[key].classList.toggle('active', Number(key) === tabIndex);
       }
     }
-
-    // Viewport info
-    function updateViewportInfo() {
-      const el = document.getElementById('viewport-info');
-      el.innerText = `Viewport: ${window.innerWidth} x ${Telegram.WebApp.viewportStableHeight}, Expanded: ${Telegram.WebApp.isExpanded}`;
-    }
-
-    updateViewportInfo();
-    Telegram.WebApp.onEvent('viewportChanged', updateViewportInfo);
   </script>
 </body>
 </html>
