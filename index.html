@@ -3,14 +3,50 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Crypto Signals & Trends</title>
+  <title>CryptoTrends Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      font-family: system-ui, sans-serif;
       background-color: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
+      font-family: 'Segoe UI', sans-serif;
+      padding-bottom: 60px; /* space for bottom nav */
+    }
+
+    .app-header {
+      padding: 16px;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      text-align: center;
+      border-bottom: 2px solid var(--tg-theme-hint-color);
+    }
+
+    .app-header h2 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .tab-content {
+      padding: 1rem;
+    }
+
+    .card-section {
+      background-color: var(--tg-theme-secondary-bg-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    }
+
+    .card-section h5 {
+      font-weight: 600;
+    }
+
+    .btn-action {
+      margin-top: 8px;
+      display: inline-block;
+      font-size: 13px;
     }
 
     .nav-pills .nav-link {
@@ -20,23 +56,6 @@
 
     .nav-pills .nav-link.active {
       background-color: var(--tg-theme-link-color);
-      color: #fff;
-    }
-
-    .tab-content {
-      padding-top: 1rem;
-    }
-
-    .signal-card, .trend-card, .insight-card, .portfolio-card {
-      background-color: var(--tg-theme-secondary-bg-color);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 0 4px rgba(0,0,0,0.05);
-    }
-
-    .card-title {
-      font-weight: 600;
     }
 
     .nav-scroll {
@@ -44,88 +63,117 @@
       white-space: nowrap;
       flex-wrap: nowrap !important;
     }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--tg-theme-secondary-bg-color);
+      border-top: 1px solid var(--tg-theme-hint-color);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      z-index: 100;
+    }
+
+    .bottom-nav button {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: var(--tg-theme-text-color);
+    }
+
+    .bottom-nav .active {
+      color: var(--tg-theme-link-color);
+    }
   </style>
 </head>
 <body>
-  <div class="container py-2">
-    <!-- Scrollable Tabs -->
-    <ul class="nav nav-pills mb-3 nav-scroll d-flex" id="tabMenu" role="tablist">
-      <li class="nav-item me-2" role="presentation">
-        <button class="nav-link active" id="signals-tab" data-bs-toggle="pill" data-bs-target="#signals" type="button" role="tab">Signals</button>
-      </li>
-      <li class="nav-item me-2" role="presentation">
-        <button class="nav-link" id="trends-tab" data-bs-toggle="pill" data-bs-target="#trends" type="button" role="tab">Trends</button>
-      </li>
-      <li class="nav-item me-2" role="presentation">
-        <button class="nav-link" id="insights-tab" data-bs-toggle="pill" data-bs-target="#insights" type="button" role="tab">Insights</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="portfolio-tab" data-bs-toggle="pill" data-bs-target="#portfolio" type="button" role="tab">Portfolio</button>
-      </li>
-    </ul>
+  <div class="app-header">
+    <h2>🚀 CryptoTrends</h2>
+    <div style="font-size: 13px;">Signals • Trends • Insights</div>
+  </div>
 
-    <!-- Tab Content -->
-    <div class="tab-content" id="tabContent">
-      <!-- Signals -->
-      <div class="tab-pane fade show active" id="signals" role="tabpanel">
-        <div class="signal-card">
-          <h5 class="card-title">BTC/USDT</h5>
-          <p>🔼 Entry: $60,200 | 🎯 Target: $62,500 | 🛑 SL: $59,500</p>
-        </div>
-        <div class="signal-card">
-          <h5 class="card-title">ETH/USDT</h5>
-          <p>🔼 Entry: $3,200 | 🎯 Target: $3,450 | 🛑 SL: $3,050</p>
-        </div>
+  <!-- Scrollable Tabs -->
+  <ul class="nav nav-pills nav-scroll d-flex px-2 pt-2" id="tabMenu" role="tablist">
+    <li class="nav-item me-2" role="presentation">
+      <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#signals" type="button">Signals</button>
+    </li>
+    <li class="nav-item me-2" role="presentation">
+      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#trends" type="button">Trends</button>
+    </li>
+    <li class="nav-item me-2" role="presentation">
+      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#insights" type="button">Insights</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#portfolio" type="button">Portfolio</button>
+    </li>
+  </ul>
+
+  <!-- Main Content -->
+  <div class="tab-content">
+    <!-- Signals Tab -->
+    <div class="tab-pane fade show active" id="signals">
+      <div class="card-section">
+        <h5>BTC/USDT</h5>
+        <p>🔼 Buy @ $60,200<br>🎯 Target: $62,500<br>🛑 SL: $59,500</p>
+        <button class="btn btn-sm btn-outline-success btn-action">Copy Signal</button>
       </div>
-
-      <!-- Trends -->
-      <div class="tab-pane fade" id="trends" role="tabpanel">
-        <div class="trend-card">
-          <h5 class="card-title">🔥 Top Gainers</h5>
-          <ul>
-            <li>SOL +14%</li>
-            <li>NEAR +11%</li>
-            <li>RNDR +9.8%</li>
-          </ul>
-        </div>
-        <div class="trend-card">
-          <h5 class="card-title">📉 Top Losers</h5>
-          <ul>
-            <li>ARB -6%</li>
-            <li>STX -4.5%</li>
-            <li>MATIC -3.8%</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Insights -->
-      <div class="tab-pane fade" id="insights" role="tabpanel">
-        <div class="insight-card">
-          <h5 class="card-title">📊 AI Forecast: BTC</h5>
-          <p>Predicted to reach $63,000 by next week based on on-chain activity and whale movements.</p>
-        </div>
-        <div class="insight-card">
-          <h5 class="card-title">🧠 On-Chain Alert</h5>
-          <p>ETH Exchange outflows increased by 30%, signaling potential accumulation.</p>
-        </div>
-      </div>
-
-      <!-- Portfolio -->
-      <div class="tab-pane fade" id="portfolio" role="tabpanel">
-        <div class="portfolio-card">
-          <h5 class="card-title">📈 My Holdings</h5>
-          <ul>
-            <li>BTC: 0.5 – $30,100</li>
-            <li>ETH: 1.2 – $3,800</li>
-            <li>SOL: 100 – $9,500</li>
-          </ul>
-        </div>
-        <div class="portfolio-card">
-          <h5 class="card-title">💰 PnL Summary</h5>
-          <p>Total Gain: +$2,400<br>ROI: +14%</p>
-        </div>
+      <div class="card-section">
+        <h5>ETH/USDT</h5>
+        <p>🔼 Buy @ $3,200<br>🎯 Target: $3,450<br>🛑 SL: $3,050</p>
+        <button class="btn btn-sm btn-outline-success btn-action">Copy Signal</button>
       </div>
     </div>
+
+    <!-- Trends Tab -->
+    <div class="tab-pane fade" id="trends">
+      <div class="card-section">
+        <h5>📈 Top Gainers</h5>
+        <p>SOL +14%<br>RNDR +10%<br>NEAR +8%</p>
+      </div>
+      <div class="card-section">
+        <h5>📉 Top Losers</h5>
+        <p>ARB -6.5%<br>MATIC -5.2%</p>
+      </div>
+    </div>
+
+    <!-- Insights Tab -->
+    <div class="tab-pane fade" id="insights">
+      <div class="card-section">
+        <h5>🧠 AI Prediction</h5>
+        <p>BTC expected to hit $63,000 by next week based on volume + sentiment.</p>
+      </div>
+      <div class="card-section">
+        <h5>📦 On-chain Alert</h5>
+        <p>Whale activity detected: 8,200 ETH moved off exchanges.</p>
+      </div>
+    </div>
+
+    <!-- Portfolio Tab -->
+    <div class="tab-pane fade" id="portfolio">
+      <div class="card-section">
+        <h5>💼 My Holdings</h5>
+        <ul>
+          <li>BTC: 0.5 ($30,200)</li>
+          <li>ETH: 1.1 ($3,700)</li>
+          <li>SOL: 120 ($9,200)</li>
+        </ul>
+      </div>
+      <div class="card-section">
+        <h5>📊 Profit / Loss</h5>
+        <p>Total Gain: +$2,350<br>ROI: +13.6%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="active" onclick="scrollToTab('signals')">📢 Signals</button>
+    <button onclick="scrollToTab('trends')">📊 Trends</button>
+    <button onclick="scrollToTab('insights')">🔍 Insights</button>
+    <button onclick="scrollToTab('portfolio')">📁 Portfolio</button>
   </div>
 
   <!-- Bootstrap JS -->
@@ -134,6 +182,20 @@
   <script>
     Telegram.WebApp.ready();
     Telegram.WebApp.setHeaderColor('secondary_bg_color');
+
+    function scrollToTab(tabId) {
+      const tabTrigger = document.querySelector(`[data-bs-target="#${tabId}"]`);
+      const navButtons = document.querySelectorAll('.bottom-nav button');
+
+      // Toggle bottom nav active state
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Switch tab
+      if (tabTrigger) {
+        new bootstrap.Tab(tabTrigger).show();
+      }
+    }
   </script>
 </body>
 </html>
