@@ -1,59 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CryptoTrends Telegram Mini App</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Telegram Mini App</title>
 
-  <!-- TailwindCSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Telegram SDK -->
+  <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Dynamic Telegram CSS Variables -->
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-    }
-    body {
-      background-color: #0f172a;
-      color: #e0e7ff;
-      font-family: 'Arial', sans-serif;
+    :root {
+      color-scheme: var(--tg-color-scheme);
     }
   </style>
 </head>
-<body class="flex flex-col items-center justify-center text-center p-4">
+<body
+  class="min-h-screen px-4 py-6 text-sm font-sans transition-all"
+  style="background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color);"
+>
+  <div class="max-w-md mx-auto text-center space-y-4">
+    <img src="https://telegram.org/img/twa-android.png" alt="TWA Logo" class="w-12 mx-auto" />
 
-  <!-- App Container -->
-  <div class="w-full max-w-md bg-indigo-900 p-6 rounded-xl shadow-lg">
-    <h1 class="text-3xl font-bold text-blue-400 mb-4">🚀 CryptoTrends</h1>
-    <p class="text-indigo-200 mb-6">Get real-time crypto alerts, trends & portfolio insights directly in Telegram.</p>
+    <h1 class="text-xl font-bold">Telegram Mini App Demo</h1>
 
-    <button id="subscribeBtn"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold text-lg transition">
-      Unlock Premium Access
+    <button
+      onclick="Telegram.WebApp.showAlert('Hello from Telegram Web App!')"
+      class="w-full py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
+    >
+      Show Alert
     </button>
 
-    <p class="text-xs text-indigo-400 mt-4">100% secure • Cancel anytime</p>
+    <button
+      onclick="showPopup()"
+      class="w-full py-3 rounded-xl bg-purple-600 text-white hover:bg-purple-700 transition"
+    >
+      Show Popup
+    </button>
+
+    <button
+      onclick="Telegram.WebApp.expand()"
+      class="w-full py-3 rounded-xl bg-green-600 text-white hover:bg-green-700 transition"
+    >
+      Expand Webview
+    </button>
+
+    <button
+      onclick="toggleMainButton()"
+      class="w-full py-3 rounded-xl bg-yellow-500 text-black hover:bg-yellow-600 transition"
+    >
+      Toggle Main Button
+    </button>
+
+    <button
+      onclick="Telegram.WebApp.openTelegramLink('https://t.me/trendingapps')"
+      class="w-full py-3 rounded-xl bg-pink-500 text-white hover:bg-pink-600 transition"
+    >
+      Open Telegram Link
+    </button>
+
+    <button
+      onclick="Telegram.WebApp.openLink('https://ton.org/')"
+      class="w-full py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition"
+    >
+      Open External Link
+    </button>
+
+    <div id="viewport-info" class="text-xs text-gray-500 mt-4"></div>
   </div>
 
   <script>
-    // Ensure Telegram Web App is ready
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+    Telegram.WebApp.ready();
+    Telegram.WebApp.setHeaderColor('secondary_bg_color');
 
-    // Example user info access
-    console.log("Telegram User:", tg.initDataUnsafe?.user);
+    // Set theme
+    document.documentElement.className = Telegram.WebApp.colorScheme;
 
-    document.getElementById('subscribeBtn').addEventListener('click', () => {
-      alert("Simulated unlock. Telegram user ID: " + tg.initDataUnsafe?.user?.id);
-      // You can send this to your backend or redirect here
-      // window.location.href = 'https://yourdomain.com/subscribe';
+    Telegram.WebApp.onEvent('themeChanged', () => {
+      document.body.style.backgroundColor = Telegram.WebApp.backgroundColor;
     });
+
+    // Main Button setup
+    Telegram.WebApp.MainButton.setParams({
+      text: 'Click Me',
+      is_visible: true,
+    });
+
+    Telegram.WebApp.MainButton.onClick(() => {
+      Telegram.WebApp.showAlert('Main Button Clicked!');
+    });
+
+    function showPopup() {
+      Telegram.WebApp.showPopup({
+        title: 'Popup Title',
+        message: 'This is a popup message!',
+        buttons: [
+          { id: 'open', type: 'default', text: 'Open TON' },
+          { type: 'cancel' }
+        ]
+      }, (btn) => {
+        if (btn === 'open') {
+          Telegram.WebApp.openLink('https://ton.org/');
+        }
+      });
+    }
+
+    function toggleMainButton() {
+      if (Telegram.WebApp.MainButton.isVisible) {
+        Telegram.WebApp.MainButton.hide();
+      } else {
+        Telegram.WebApp.MainButton.show();
+      }
+    }
+
+    function updateViewportInfo() {
+      const el = document.getElementById('viewport-info');
+      el.innerText = `Viewport: ${window.innerWidth} x ${Telegram.WebApp.viewportStableHeight}, Expanded: ${Telegram.WebApp.isExpanded}`;
+    }
+
+    updateViewportInfo();
+    Telegram.WebApp.onEvent('viewportChanged', updateViewportInfo);
   </script>
 </body>
 </html>
